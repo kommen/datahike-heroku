@@ -1,22 +1,31 @@
 # datahike-heroku
 
-FIXME: my new template.
+A clj-template for a web app running on Heroku using datahike with postgres.
 
-## Usage
+## Heroku App Setup
 
-FIXME: write usage documentation!
+Ensure your newly generated app is backed with a git repo and commit the
+initial verison.
 
-Build a deployable jar of this template:
+Create a heroku app and a postgres database for it (hobby dev is free)
 
-    $ clojure -M:jar
+```
+heroku apps:create --region eu --addons heroku-postgresql:hobby-dev  
+```
 
-Install it locally:
+Make heroku use the latest Clojure CLI version
 
-    $ clojure -M:install
+```
+heroku config:set CLOJURE_CLI_VERSION=1.10.1.763
+```
 
-Deploy it to Clojars -- needs `CLOJARS_USERNAME` and `CLOJARS_PASSWORD` environment variables:
+Deploy 
 
-    $ clojure -M:deploy
+```
+git push heroku main
+```
+
+This will print the URL of you're newly created app at the end.
 
 ## License
 
