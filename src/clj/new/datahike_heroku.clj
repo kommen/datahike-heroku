@@ -9,4 +9,11 @@
     (println "Generating fresh 'clj new' datahike-heroku project.")
     (->files data
              ["deps.edn" (render "deps.edn" data)]
-             ["src/{{nested-dirs}}/foo.clj" (render "foo.clj" data)])))
+             ["project.clj" (render "project.clj" data)]
+             ["bin/build" (render "build" data) :executable true]
+             ["Procfile" (render "Procfile" data)]
+             ["src/{{nested-dirs}}/server.clj" (render "server.clj" data)])))
+
+(comment
+  (with-bindings {#'clj.new.templates/*force?* true}
+    (datahike-heroku "test1app")))

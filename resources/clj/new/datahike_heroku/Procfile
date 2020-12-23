@@ -1,0 +1,1 @@
+web: java -cp {{artifact}}.jar clojure.main -m {{namespace}}.server
