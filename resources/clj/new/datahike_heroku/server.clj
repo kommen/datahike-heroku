@@ -8,7 +8,10 @@
 (def app-state (atom {:conn nil
                       :server nil}))
 
-(defn handler [request]
+(defn handler
+  "A ring handler returning all todo items in the database
+  If a `todo` query param is present, transacts it to the database"
+  [request]
   (when-let [todo (get-in request [:params "todo"])]
     (d/transact (:conn @app-state) [{:todo/name todo}]))
 
@@ -20,17 +23,25 @@
      :body    (str "Todo items: <br/>" (str/join "<br/>" todos))}))
 
 (def app
+  "The application's main ring handler which is passed to the web server"
   (params/wrap-params handler))
 
 (def schema
+  "The database schema which is transacted when the app starts"
   [{:db/ident :todo/name
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one}])
 
-(defn env-port []
+(defn env-port
+  "Parses the `PORT` env var provided by Heroku on which port
+  to start the http server"
+  []
   (some-> (System/getenv "PORT") Integer/parseInt))
 
-(defn env-db-config []
+(defn env-db-config
+  "Constructs a datahike configuration map from the the heroku
+  provided `DATABASE_URL` or returns nil if that env var is not present"
+  []
   (when-let [db-url (System/getenv "DATABASE_URL")]
     (let [uri                 (java.net.URI. db-url)
           [username password] (str/split (.getUserInfo uri) #":")]
@@ -42,7 +53,10 @@
         :path     (.getPath uri)
         :port     (.getPort uri)}})))
 
-(defn start-db! []
+(defn start-db!
+  "Creates a datahike connection and transacts the schema
+  If no DATABASE_URL is present, uses an in-memory store"
+  []
   (let [db-config (or (env-db-config)
                       {:store {:backend :mem :id "server"}})]
     (when-not (d/database-exists? db-config)
@@ -52,7 +66,9 @@
       (d/transact conn schema)
       (swap! app-state assoc :conn conn))))
 
-(defn start-http! []
+(defn start-http!
+  "Starts an http webserver on `PORT`, or if not present on 3000"
+  []
   (let [port   (or (env-port) 3000)
         server (jetty/run-jetty #'app {:port port :join? false})]
     (swap! app-state assoc :server server)))
