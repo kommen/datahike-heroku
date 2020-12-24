@@ -5,7 +5,11 @@ A clj-template for a web app running on Heroku using datahike with postgres.
 ## Heroku App Setup
 
 Ensure your newly generated app is backed with a git repo and commit the
-initial verison.
+initial version, if isn't already
+
+```
+git init && git add --all && git commit -m "Initial commit" 
+```
 
 Create a heroku app and a postgres database for it (hobby dev is free)
 
@@ -30,11 +34,10 @@ This will print the URL of you're newly created app at the end.
 
 ## What is included?
 
-*) deps.edn used for dependencies
-*) plumbing for deployment to Heroku, including a `bin/build` and `Procfile` and using depstar
-*) datahike configured to use Heroku postgresql as the storage backend
-*) a ring webserver configured to listen on the port provided by Heroku 
-
+  * deps.edn used for dependencies
+  * plumbing for deployment to Heroku, including a `bin/build` and `Procfile` and using depstar
+  * datahike configured to use Heroku postgresql as the storage backend
+  * a ring webserver configured to listen on the port provided by Heroku 
 
 ## See also
 
